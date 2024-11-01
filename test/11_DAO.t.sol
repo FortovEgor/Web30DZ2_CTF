@@ -30,7 +30,6 @@ contract DAOTest is BaseTest {
     }
 
     function testExploitLevel() public {
-        /* YOUR EXPLOIT GOES HERE */
 
         checkSuccess();
     }

